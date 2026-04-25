@@ -1,0 +1,10 @@
+set(CMAKE_SYSTEM_PROCESSOR arm64)
+set(CMAKE_SYSROOT "/opt/my-distro/0.1/sysroots/cortexa53-poky-linux")
+set(CMAKE_C_COMPILER "/opt/my-distro/0.1/sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-gсс")
+set(CMAKE_CXX_COMPILER "/opt/my-distro/0.1/sysroots/x86_64-pokysdk-linux/usr/bin/aarch64-poky-linux/aarch64-poky-linux-g++")
+set(OE_QMAKE_PATH_EXTERNAL_HOST_BINS "/opt/my-distro/0.1/sysroots/x86_64-pokysdk-linux/usr/bin")
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
