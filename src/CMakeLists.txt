@@ -12,4 +12,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
                       Qt5::Widgets
                       Boost::filesystem)        
 
-install(TARGETS ${PROJECT_NAME} DESTINATION RUNTIME)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
