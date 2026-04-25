@@ -1,0 +1,42 @@
+
+x-common-volume: &common-volume
+  type: bind
+  source: .
+  target: /home/builder/systemanalyzer  
+
+services:
+  buildproj:
+    user: builder:builder
+    image: sdk:latest
+    volumes:
+      - *common-volume
+    working_dir: /home/builder/systemanalyzer
+    command: 
+      bash -c " mkdir -p build install \                
+                && cmake -S src -B build -DCMAKE_TOOLCHAIN_FILE=/home/builder/systemanalyzer/toolchain.cmake \
+                                         -DCMAKE_BUILD_TYPE=Release \
+                                         -DCMAKE_INSTALL_PREFIX=install \
+                                         -GNinja \
+                && cmake --build build --target install"
+  qtdeploy:
+    user : builder:builder
+    build:
+      dockerfile_inline: | 
+        FROM sdk:latest
+        ARG DEBIAN_FRONTEND=noninteractive
+        RUN apt update && apt install -y --no-install-recommends \
+            qtcreator \
+            && apt clean && rm -rf /var/apt/lists/*      
+    volumes:
+      - *common-volume
+      - $PWD/.artifacts/.config:/home/builder/.config
+      - $PWD/.artifacts/.cache:/home/builder/.cache
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $XDG_RUNTIME_DIR:/run/builder/1000
+      - $PWD/toolchain.cmake:/opt/toolchain.cmake
+    working_dir: /home/builder/systemanalyzer
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XDG_RUNTIME_DIR=/run/builder/1000
+    command:  
+      bash -c "qtcreator"
