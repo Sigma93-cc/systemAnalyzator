@@ -17,7 +17,7 @@ services:
                                          -DCMAKE_BUILD_TYPE=Release \
                                          -DCMAKE_INSTALL_PREFIX=install \
                                          -GNinja \
-                && cmake --build build --target install"
+                && cmake --build build --target install package"
   qtdeploy:
     user : builder:builder
     build:
@@ -26,6 +26,11 @@ services:
         ARG DEBIAN_FRONTEND=noninteractive
         RUN apt update && apt install -y --no-install-recommends \
             qtcreator \
+            gdb \
+            libboost-all-dev \
+            libspdlog-dev \
+            qtbase5-dev \
+            build-essential \
             && apt clean && rm -rf /var/apt/lists/*      
     volumes:
       - *common-volume

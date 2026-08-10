@@ -1,0 +1,11 @@
+[Unit]
+Description=System analyzer utility by SigmaStudio
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=10
+ExecStart=./bin/systemAnalyzator
+
+[Install]
+WantedBy=multi-user.target

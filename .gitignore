@@ -2,4 +2,5 @@ build
 install
 .artifacts
 build-*
+sdk/*.sh
 CMakeLists.txt.*
