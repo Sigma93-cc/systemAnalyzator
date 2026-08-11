@@ -5,7 +5,8 @@ Description=System analyzer utility by SigmaStudio
 Type=simple
 Restart=on-failure
 RestartSec=10
-ExecStart=./bin/systemAnalyzator
+WorkingDirectory=/usr/bin
+ExecStart=systemanalyzer
 
 [Install]
 WantedBy=multi-user.target

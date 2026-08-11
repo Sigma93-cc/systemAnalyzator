@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(systemanalyzator VERSION 1.0.0.0 LANGUAGES CXX)
+project(systemanalyzer VERSION 1.0.0.0 LANGUAGES CXX)
 
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(Boost REQUIRED COMPONENTS filesystem)
@@ -8,6 +8,9 @@ find_package(spdlog REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
+
+set(SYSTEMD_UNIT_DIR "${CMAKE_INSTALL_PREFIX}/lib/systemd/system"
+    CACHE PATH "Directory for systemd service files")
 
 add_executable(${PROJECT_NAME} src/main.cpp src/window.h src/window.cpp src/window.ui)
 
@@ -18,7 +21,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
                       spdlog::spdlog)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
-install(FILES data/systemanalyzer.service DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(FILES data/systemanalyzer.service DESTINATION ${SYSTEMD_UNIT_DIR})
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64|amd64")
     set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/deb")
