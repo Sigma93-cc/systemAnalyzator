@@ -1,0 +1,9 @@
+#pragma once
+
+constexpr int to_val(std::string_view sv) {
+    return (sv == "ON") ? 1 : 0;
+}
+
+
+static constexpr const std::string_view projectversion = "@PROJECT_VERSION@";
+static constexpr const int notfullscreen = to_val("@DISABLE_FULLSCREEN@");

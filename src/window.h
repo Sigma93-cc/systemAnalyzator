@@ -2,7 +2,7 @@
 #define WINDOW_H
 
 #include <QMainWindow>
-
+#include <string>
 namespace Ui {
 class Window;
 }
@@ -12,15 +12,11 @@ class Window : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit Window(QWidget *parent = nullptr);
+    explicit Window(QWidget *parent = nullptr, std::string_view osver = {}, std::string_view softver = {});
     ~Window();
-
-private slots:
-    void on_touchPushed_clicked();
 
 private:
     Ui::Window *ui;
-    std::uint32_t counter{};
 };
 
 #endif // WINDOW_H
