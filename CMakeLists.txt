@@ -9,11 +9,8 @@ execute_process(
 )
 
 if(GIT_TAG)
-    string(REPLACE "v" "" VERSION_FROM_GIT "${GIT_TAG}")
-endif()
-
-if(VERSION_FROM_GIT AND VERSION_FROM_GIT MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$")
-    set(PROJECT_VERSION ${VERSION_FROM_GIT})
+    string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" CLEAN_VERSION "${GIT_TAG}")
+    set(PROJECT_VERSION ${CLEAN_VERSION})
 else()
     set(PROJECT_VERSION "1.0.0.0")
 endif()

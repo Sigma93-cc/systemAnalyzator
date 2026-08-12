@@ -12,6 +12,7 @@ RUN apt update && apt install -y --no-install-recommends \
     ninja-build \
     dpkg-dev \
     file \
+    git \
     && apt clean \
     && rm -rf /var/apt/lists/*
 
