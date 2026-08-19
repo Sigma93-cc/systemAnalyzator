@@ -25,6 +25,8 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(Boost REQUIRED COMPONENTS filesystem)
 find_package(spdlog REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(UBOOTENV REQUIRED IMPORTED_TARGET libubootenv)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -38,6 +40,8 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
     src/versionchecker.cpp
     src/versionchecker.h
+    src/ubootmanager.h
+    src/ubootmanager.cpp
     src/window.h
     src/window.cpp
     src/window.ui
@@ -46,7 +50,8 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE 
                       Qt5::Core
                       Qt5::Widgets
-                      Boost::filesystem)
+                      Boost::filesystem
+                      PkgConfig::UBOOTENV)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 install(FILES data/systemanalyzer.service DESTINATION ${SYSTEMD_UNIT_DIR})

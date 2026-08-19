@@ -27,10 +27,12 @@ services:
         RUN apt update && apt install -y --no-install-recommends \
             qtcreator \
             gdb \
+            pkg-config \
             libboost-all-dev \
             libspdlog-dev \
             qtbase5-dev \
             build-essential \
+            libubootenv-dev \
             && apt clean && rm -rf /var/apt/lists/*      
     volumes:
       - *common-volume
