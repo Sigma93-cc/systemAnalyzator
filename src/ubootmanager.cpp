@@ -46,13 +46,14 @@ void Ubootmanager::_close()
 
 bool Ubootmanager::mark_good()
 {
+    auto ok = false;
     if (auto res = _open(); res) {
         libuboot_set_env(ctx,"upgrade_available", "0");
-        libuboot_env_store(ctx);
-        _close();
-        return true;
+        libuboot_set_env(ctx,"bootcount", "0");
+        ok = (libuboot_env_store(ctx) == 0);        
     }
-    return false;
+    _close();
+    return ok;
 }
 
 Ubootmanager::uboot_info Ubootmanager::info()
@@ -60,15 +61,15 @@ Ubootmanager::uboot_info Ubootmanager::info()
     uboot_info out{0, false};
 
     if(auto res = _open(); res) {
-        if (auto up_available = libuboot_get_env(ctx, "upgrade_available");up_available) {
+        if (auto up_available = libuboot_get_env(ctx, "upgrade_available"); up_available) {
             out.second = std::stoi(up_available);
             free(up_available);
         }
-        if (auto bootpart = libuboot_get_env(ctx, "bootpart");bootpart) {
+        if (auto bootpart = libuboot_get_env(ctx, "bootpart"); bootpart) {
             out.first = std::stoi(bootpart);
             free(bootpart);
-        }
-        _close();
+        }        
     }
+    _close();
     return out;
 }
