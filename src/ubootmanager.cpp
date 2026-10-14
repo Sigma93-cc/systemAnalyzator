@@ -39,7 +39,8 @@ bool UbootEnvManagerPriv::_open()
 
     if (!libuboot_open(ctx))
         return true;
-    return false;
+
+    return libuboot_load_file(ctx, "/etc/u-boot-initial-env") == 0;
 }
 
 void UbootEnvManagerPriv::_close()
