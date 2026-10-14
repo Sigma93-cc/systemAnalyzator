@@ -45,7 +45,9 @@ add_executable(${PROJECT_NAME}
     src/window.h
     src/window.cpp
     src/window.ui
-    src/version.h.in)
+    src/version.h.in
+    src/core.h src/core.cpp
+)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
                       Qt5::Core

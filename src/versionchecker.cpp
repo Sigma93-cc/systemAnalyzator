@@ -6,7 +6,6 @@
 #include <version.h>
 
 Versionchecker::systemInfo Versionchecker::getInfo() {
-    std::cout << projectversion;
     return {readOSRelease(), std::string(projectversion)};
 }
 
@@ -19,27 +18,23 @@ std::string Versionchecker::readOSRelease() {
          return {};
     }
 
-    std::list<std::string> keys {"NAME=", "VERSION_ID="};
-    auto it = keys.begin();
+    std::string key="PRETTY_NAME=";
     if (auto file = std::fstream(filename, std::ios::in); file.is_open()) {
         for (std::string line; std::getline(file, line);) {
-            if (it == keys.end())
-                break;
-            if (auto [res, value] = parseLine(line, *it); res) {
-                out << value << " ";
-                ++it;
+            if (auto [res, value] = parseLine(line, key); res) {
+                return value;
             }
         }
     } else {
       std::cout << "Can't open file" << filename << std::endl;
       return {};
     }
-    return out.str();
+    return {};
 }
 
 std::pair<bool, std::string> Versionchecker::parseLine(std::string_view line, std::string_view attr) {
     if (auto res = line.find(attr); res != line.npos && res == 0) {
-        return {true, std::string(line.substr(attr.length()+1,line.length()-attr.length()-2))};
+        return {true, std::string(line.substr(attr.length(),line.length()-attr.length()))};
     }
     return {};
 }

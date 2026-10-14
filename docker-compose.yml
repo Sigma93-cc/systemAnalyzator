@@ -25,19 +25,39 @@ services:
         FROM sdk:latest
         ARG DEBIAN_FRONTEND=noninteractive
         RUN apt update && apt install -y --no-install-recommends \
-            qtcreator \
             gdb \
             pkg-config \
             libboost-all-dev \
             libspdlog-dev \
             qtbase5-dev \
             build-essential \
-            libubootenv-dev \
-            && apt clean && rm -rf /var/apt/lists/*      
+            ca-certificates \
+            wget \
+            libyaml-dev \
+            && apt clean && rm -rf /var/apt/lists/* 
+        RUN mkdir -p /tmp/libubootenv \
+            && cd /tmp/libubootenv/ \
+            && git clone -b v0.3.5 https://github.com/sbabic/libubootenv.git . \
+            && mkdir -p build \
+            && cd build \
+            && cmake .. -DCMAKE_BUILD_TYPE=Release \
+                        -DCMAKE_INSTALL_PREFIX=/usr \
+                        -DCMAKE_INSTALL_LIBDIR=lib/x86_64-linux-gnu \
+                        -DCMAKE_INSTALL_INCLUDEDIR=include  \
+                        -GNinja \
+            && cmake --build . --target install -j$$(nproc) \
+            && cd /tmp && rm -rf libubootenv
+        RUN cd /tmp \
+            && wget https://download.qt.io/archive/qtcreator/14.0/14.0.2/cpack_experimental/qtcreator-opensource-linux-x86_64-14.0.2.deb \
+            && apt-get install -y -f --no-install-recommends ./qtcreator-opensource-linux-x86_64-14.0.2.deb \
+            && ln -sf /opt/qt-creator/bin/qtcreator /usr/local/bin/qtcreator \
+            && rm -rf qtcreator-opensource-linux-x86_64-14.0.2.deb
     volumes:
       - *common-volume
       - $PWD/.artifacts/.config:/home/builder/.config
       - $PWD/.artifacts/.cache:/home/builder/.cache
+      - $PWD/tools/fw_env.config:/etc/fw_env.config:ro
+      - $PWD/tools/os-release:/etc/os-release:ro
       - /tmp/.X11-unix:/tmp/.X11-unix
       - $XDG_RUNTIME_DIR:/run/builder/1000
       - $PWD/toolchain.cmake:/opt/toolchain.cmake
@@ -45,5 +65,6 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - XDG_RUNTIME_DIR=/run/builder/1000
+      - SA_CMDLINE=/home/builder/systemanalyzer/tools/cmdline
     command:  
       bash -c "qtcreator"

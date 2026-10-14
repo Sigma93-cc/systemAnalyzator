@@ -1,18 +1,27 @@
 #include "ubootmanager.h"
-#include <cstddef>
 #include <iostream>
 #include <cstring>
 
-Ubootmanager::Ubootmanager()
-{    
+struct UbootEnvManagerPriv
+{
+    UbootEnvManagerPriv();
+    ~UbootEnvManagerPriv();
+    bool _open();
+    void _close();
+    struct uboot_ctx* ctx = nullptr;
+};
+
+UbootEnvManagerPriv::UbootEnvManagerPriv()
+{
     if (libuboot_read_config_ext(&ctx, "/etc/fw_env.config") < 0) {
         std::cerr << "Error reading U-Boot config" << std::endl;
         ctx = nullptr;
         return;
     }
+    std::cout << "U-Boot config readed sucessfully" << std::endl;
 }
 
-Ubootmanager::~Ubootmanager()
+UbootEnvManagerPriv::~UbootEnvManagerPriv()
 {
     if (!ctx)
         return;
@@ -20,13 +29,10 @@ Ubootmanager::~Ubootmanager()
     libuboot_exit(ctx);
 }
 
-Ubootmanager& Ubootmanager::instance()
-{
-    static Ubootmanager mng;
-    return mng;
-}
+UbootEnvManager::UbootEnvManager() : d (new UbootEnvManagerPriv()) {}
+UbootEnvManager::~UbootEnvManager() {}
 
-bool Ubootmanager::_open()
+bool UbootEnvManagerPriv::_open()
 {
     if (!ctx)
         return false;
@@ -36,7 +42,7 @@ bool Ubootmanager::_open()
     return false;
 }
 
-void Ubootmanager::_close()
+void UbootEnvManagerPriv::_close()
 {
     if (!ctx)
         return;
@@ -44,32 +50,28 @@ void Ubootmanager::_close()
     libuboot_close(ctx);    
 }
 
-bool Ubootmanager::mark_good()
+std::string UbootEnvManager::get(std::string_view attr)
 {
-    auto ok = false;
-    if (auto res = _open(); res) {
-        libuboot_set_env(ctx,"upgrade_available", "0");
-        libuboot_set_env(ctx,"bootcount", "0");
-        ok = (libuboot_env_store(ctx) == 0);        
+    std::string out {};
+    if (auto res = d->_open(); res) {
+        if (auto val = libuboot_get_env(d->ctx, attr.data()); val) {
+            out.assign(val);
+            free(val);
+        }
     }
-    _close();
-    return ok;
+    d->_close();
+    return out;
 }
 
-Ubootmanager::uboot_info Ubootmanager::info()
+bool UbootEnvManager::set(std::string_view attr, std::string_view val)
 {
-    uboot_info out{0, false};
-
-    if(auto res = _open(); res) {
-        if (auto up_available = libuboot_get_env(ctx, "upgrade_available"); up_available) {
-            out.second = std::stoi(up_available);
-            free(up_available);
+    auto ok = false;
+    if (auto res = d->_open(); res) {
+        ok = libuboot_set_env(d->ctx, attr.data(), val.data()) == 0;
+        if (ok) {
+            ok = libuboot_env_store(d->ctx) == 0;
         }
-        if (auto bootpart = libuboot_get_env(ctx, "bootpart"); bootpart) {
-            out.first = std::stoi(bootpart);
-            free(bootpart);
-        }        
     }
-    _close();
-    return out;
+    d->_close();
+    return ok;
 }

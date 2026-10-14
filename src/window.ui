@@ -123,7 +123,7 @@
        <string notr="true">color: rgb(255, 0, 0)</string>
       </property>
       <property name="text">
-       <string>ПРОВЕРКА СИСТЕМЫ</string>
+       <string>ПРОВЕРКА СИСТЕМЫ ПОСЛЕ ОБНОВЛЕНИЯ</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

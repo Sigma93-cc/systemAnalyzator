@@ -1,0 +1,1 @@
+coherent_pool=1M 8250.nr_uarts=1 cgroup_disable=memory vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000 dwc_otg.lpm_enable=0 console=ttyAMA0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait logo.nologo net.ifnames=0 systemd.machine_id=0000000000005569000000007daed74f panic=5 watchdog.open_timeout=180 ro

@@ -1,0 +1,7 @@
+ID=sigmastudio
+NAME="SigmaOS"
+VERSION="1.0.9-6-g7150d88-dirty (scarthgap)"
+VERSION_ID=1.0.9-6-g7150d88-dirty
+VERSION_CODENAME="scarthgap"
+PRETTY_NAME="SigmaOS 1.0.9-6-g7150d88-dirty (scarthgap)"
+CPE_NAME="cpe:/o:openembedded:sigmastudio:1.0.9-6-g7150d88-dirty"

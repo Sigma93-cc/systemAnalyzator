@@ -1,24 +1,19 @@
-#ifndef UBOOTMANAGER_H
-#define UBOOTMANAGER_H
+#pragma once
 
-#include <cstdint>
-#include <cstddef>
 #include <libuboot.h>
-#include <utility>
+#include <string_view>
+#include <memory>
 
-class Ubootmanager
+struct UbootEnvManagerPriv;
+class UbootEnvManager
 {
 public:
-    using uboot_info = std::pair<std::uint32_t, bool>;
-    static Ubootmanager& instance();
-    bool mark_good();
-    uboot_info info();
+    UbootEnvManager();
+    ~UbootEnvManager();
+    std::string get(std::string_view attr);
+    bool set(std::string_view attr, std::string_view val);
 private:
-    Ubootmanager();
-    ~Ubootmanager();
-    bool _open();
-    void _close();
-    struct uboot_ctx* ctx = nullptr;
+    std::unique_ptr<UbootEnvManagerPriv> d;
 };
 
-#endif // UBOOTMANAGER_H
+
